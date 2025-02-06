@@ -1,4 +1,5 @@
-zmodule $AZIM_HOME/modules/colorful
+zmodule git-info
+zmodule $AZIM_HOME/modules/asciiship
 zmodule $AZIM_HOME/modules/azim
 zmodule $AZIM_HOME/modules/extract
 zmodule $AZIM_HOME/modules/sudo
