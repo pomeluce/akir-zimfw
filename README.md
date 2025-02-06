@@ -1,61 +1,41 @@
-## DZS
+## akir-zimfw
 
 ```
-基于 omz 的源码构建的 zsh 框架, 对 omz 的源码进行了大幅度精简, 根据功能需要整合常用插件, 和部分脚本,
-让 zsh 使用更加顺手
+基于 zimfw 的框架构建的 zsh 使用环境, 自定义多个功能模块, 整合常用插件, 添加一些常用脚本, 让 zsh 使用更加顺手
 
-1. extract 简化解压操作
-2. sudo 快捷执行 sudo 命令
-3. fzf-tab 更智能的 tab 补全
-4. z.lua 常用目录快捷跳转
-5. zsh-autosuggestions       \
-                              zsh 提示高亮
-6. zsh-syntax-highlighting   /
-7. ls 文件展示升级
-8. 图片预览
+1. azim: 自定义核心模块, 配置补全, 历史信息, 按键绑定, hook 脚本等
+2. colorful: 自定义颜色主题
+3. extract: 文件解压缩模块
+4. fzf: 结合 fzf.zsh 实现的更智能的命令行界面补全, 信息查看, 文件预览模块
+5. fzf-tab-hook: fzf-tab 的 hook 脚本
+6. git: 自定义 git 模块, 添加常用 git 命令别名
+7. sudo: 快捷执行 sudo 命令
 ```
 
 ### 目录结构
 
 ```
-.
-├── cache
-├── config
-│   ├── dzs.zsh
-│   ├── fzf.zsh
-│   └── git.zsh
-├── init.zsh
-├── libs
-│   ├── completion.zsh
-│   ├── directories.zsh
-│   ├── dzs.zsh
-│   ├── file-preview.zsh
-│   ├── get-cursor.zsh
-│   ├── git.zsh
-│   ├── grep.zsh
-│   ├── history.zsh
-│   ├── img-preview.zsh
-│   ├── key-bindings.zsh
-│   ├── termsupport.zsh
-│   └── theme-appearence.zsh
-├── LICENSE
-├── plugins
-│   ├── extract
-│   ├── fzf-tab
-│   ├── sudo
-│   ├── z.lua
-│   ├── zsh-autosuggestions
-│   └── zsh-syntax-highlighting
-├── README.md
-└── theme
-    └── dzs.zsh-theme
+ .
+├── 󰃨 cache
+├──  init.zsh
+├──  LICENSE
+├──  modules
+│   ├──  azim
+│   ├──  colorful
+│   ├──  extract
+│   ├──  fzf
+│   ├──  fzf-tab-hook
+│   ├──  git
+│   └──  sudo
+├──  README.md
+└──  zimrc
 ```
 
 ### 环境依赖
 
 ```
 1. 默认 shell 必须为 zsh
-2. 需要安装 fd, exa, bat, fzf, ueberzug, lsd, git, lua
+2. 需要安装 fd, exa, bat, fzf, ueberzug, lsd(可选), git, lua
 ```
 
 ### 安装使用
@@ -79,14 +59,14 @@ yay/pacman -S fd exa bat fzf ueberzug lsd git lua
 # 其他 Linux 发行版以各自对应的包管理器为准进行安装
 ```
 
-3. 安装 dzs
+3. 安装 akir-zimfw
 
 ```zsh
 # 使用下面的命令拉取仓库
-git clone https://github.com/pomeluce/dzs.git ~/.config/dzs
+git clone https://github.com/pomeluce/akir-zimfw.git ~/.config/akir-zimfw
 
 # 执行如下命令进行配置
-echo 'source ~/.config/dzs/init.zsh' >> ~/.zshrc
+echo 'source ~/.config/akir-zimfw/init.zsh' >> ~/.zshrc
 
 # 执行如下命令重新加载终端环境
 source ~/.zshrc
@@ -94,14 +74,15 @@ source ~/.zshrc
 
 ### 可选配置
 
-| 参数             | 默认值                              | 说明                                   |
-| ---------------- | ----------------------------------- | -------------------------------------- |
-| EXC_FOLDERS      | {.bzr,CVS,.git,.hg,.svn,.idea,.tox} | 设置 grep 命令要忽略的目录             |
-| ZSH_CACHE_DIR    | $DZS/cache                          | 设置 zsh 的 cache 目录                 |
-| CASE_SENSITIVE   | false                               | 设置大小写是否敏感                     |
-| P10K             | fasle                               | 是否开启 powerlevel10k 主题            |
-| DZS_IN_LASTDIR   | false                               | 是否在启动时自动进入上次目录           |
-| DZS_HISTORY_SHOW | true                                | 绑定 Ctrl + r 快捷键, 展示搜索历史命令 |
+| 参数                      | 默认值                              | 说明                                           |
+| ------------------------- | ----------------------------------- | ---------------------------------------------- |
+| EXC_FOLDERS               | {.bzr,CVS,.git,.hg,.svn,.idea,.tox} | 设置 grep 命令要忽略的目录                     |
+| ZSH_CACHE_DIR             | $AZIM_HOME/cache                          | 设置 zsh 的 cache 目录                         |
+| CASE_SENSITIVE            | false                               | 设置大小写是否敏感                             |
+| P10K                      | fasle                               | 是否开启 powerlevel10k 主题                    |
+| AZIM_IN_LASTDIR           | false                               | 是否在启动时自动进入上次目录                   |
+| AZIM_HISTORY_SHOW         | true                                | 绑定 Ctrl + r 快捷键, 展示搜索历史命令         |
+| git 配置 azim.hide-status | 0                                   | git 仓库目录是否显示 git 信息, 值为 1 则不显示 |
 
 ### git 命令
 

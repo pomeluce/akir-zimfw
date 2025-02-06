@@ -5,7 +5,7 @@ if [ -d "$1" ]; then
 elif [ "$category" = text ]; then
     (bat -p --color=always "$1" || cat "$1") 2>/dev/null | head -1000
 elif [ "$category" = image ]; then
-    command -v ueberzug >/dev/null 2>&1 && zsh $DZS/libs/img-preview.zsh "$1"|| img2txt "$1"
+    command -v ueberzug >/dev/null 2>&1 && zsh $AZIM_HOME/modules/fzf/img-preview.zsh "$1"|| img2txt "$1"
 else
     echo $1 is a $category file
 fi

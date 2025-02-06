@@ -1,5 +1,5 @@
 ## History wrapper
-function dzs_history {
+function _azim_history {
   local clear list
   zparseopts -E c=clear l=list
 
@@ -19,15 +19,15 @@ function dzs_history {
 
 # Timestamp format
 case ${HIST_STAMPS-} in
-  "mm/dd/yyyy") alias history='dzs_history -f' ;;
-  "dd.mm.yyyy") alias history='dzs_history -E' ;;
-  "yyyy-mm-dd") alias history='dzs_history -i' ;;
-  "") alias history='dzs_history' ;;
-  *) alias history="dzs_history -t '$HIST_STAMPS'" ;;
+  "mm/dd/yyyy") alias history='_azim_history -f' ;;
+  "dd.mm.yyyy") alias history='_azim_history -E' ;;
+  "yyyy-mm-dd") alias history='_azim_history -i' ;;
+  "") alias history='_azim_history' ;;
+  *) alias history="_azim_history -t '$HIST_STAMPS'" ;;
 esac
 
 ## History file configuration
-HISTFILE="$DZS/cache/dzsHistory"
+HISTFILE="$AZIM_HOME/cache/azimHistory"
 HISTSIZE=50000
 SAVEHIST=10000
 

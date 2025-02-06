@@ -21,7 +21,7 @@ function finalise {
 }
 
 function draw_preview {
-    source $DZS/cache/cursor
+    source $AZIM_HOME/cache/cursor
     X=$(($COLUMNS / 2 + 2))
     Y=$((row + 3))
     if [ $Y -gt $((LINES - 11)) ]; then

@@ -1,6 +1,3 @@
 cache/
-plugins/fzf-tab
-plugins/powerlevel10k
-plugins/z.lua
-plugins/zsh-autosuggestions
-plugins/zsh-syntax-highlighting
+*.zwc
+zim/

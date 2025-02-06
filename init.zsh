@@ -1,8 +1,22 @@
-export DZS=$(cd $(dirname $0);pwd)
-source $DZS/config/dzs.zsh
-source $DZS/config/git.zsh
-source $DZS/config/fzf.zsh
-source $DZS/config/vfox.zsh
+export AZIM_HOME=$(cd $(dirname $0);pwd)
+ZIM_CONFIG_FILE=$AZIM_HOME/zimrc
+ZIM_HOME=$AZIM_HOME/zim
 
-[[ $DZS_HISTORY_SHOW == false ]] || dzs_history_show
-[[ $DZS_IN_LASTDIR == false ]] || dzs_in_lastdir
+# Download zimfw plugin manager if missing.
+if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+  curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+fi
+
+# Install missing modules and update ${ZIM_HOME}/init.zsh if missing or outdated.
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} ]]; then
+  source ${ZIM_HOME}/zimfw.zsh init -q
+fi
+
+# Initialize modules.
+if [[ -f ${ZIM_HOME}/init.zsh ]]; then
+  source ${ZIM_HOME}/init.zsh
+fi
+
+# hooks start
+[[ $AZIM_HISTORY_SHOW == false ]] || _azim_history_show
+[[ $AZIM_IN_LASTDIR == false ]] || _azim_in_lastdir
