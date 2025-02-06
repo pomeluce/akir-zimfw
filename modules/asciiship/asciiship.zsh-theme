@@ -67,7 +67,7 @@ precmd() {
 }
 
 PS1='
-%(!.%{$azim_turquoise%}%n%{$azim_reset_color%} in .${SSH_TTY:+"%{$azim_orange%}%n%{$azim_reset_color%} in "})${SSH_TTY:+"%{$azim_limegreen%}%m%{$azim_reset_color%} in "}%{$azim_limegreen%}%~%{$azim_reset_color%} ${(e)git_info[prompt]}${VIRTUAL_ENV:+" via %{$azim_orange%}${VIRTUAL_ENV:t}%{$azim_reset_color%}"}
-%(?.%{$azim_limegreen%}.%{$azim_red%}%? )$(_prompt_asciiship_vimode)%{$azim_reset_color%} '
+%(!.%B%{$azim_red%}%n%{$azim_reset_color%}%b in .${SSH_TTY:+"%{$azim_orange%}%n%{$azim_reset_color%} in "})${SSH_TTY:+"%{$azim_limegreen%}%m%{$azim_reset_color%} in "}%{$azim_limegreen%}%~%{$azim_reset_color%} ${(e)git_info[prompt]}${VIRTUAL_ENV:+" via %{$azim_orange%}${VIRTUAL_ENV:t}%{$azim_reset_color%}"}
+%(?.%{$azim_limegreen%}.%{$azim_red%})$(_prompt_asciiship_vimode)%{$azim_reset_color%} '
 
 unset RPS1
