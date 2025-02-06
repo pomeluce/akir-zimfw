@@ -41,30 +41,25 @@ fi
 # Reset color.
 azim_reset_color="%f"
 
-precmd() {
-  # Depends on git-info module to show git information
-  typeset -gA git_info
-  unindexed=' %{$azim_orange%}!%{$azim_reset_color%}'
-  if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
-    git status --porcelain | grep --max-count=1 '^??' &> /dev/null; then
-    unindexed+=' %{$azim_red%}?%{$azim_reset_color%}'
-  fi
+# Depends on git-info module to show git information
+typeset -gA git_info
 
-  if (( ${+functions[git-info]} )); then
-    zstyle ':zim:git-info:branch' format '%b'
-    zstyle ':zim:git-info:commit' format 'HEAD %{$azim_limegreen%}(%c)%{$azim_reset_color%}'
-    zstyle ':zim:git-info:action' format '(%{$azim_magenta%}%a%{$azim_reset_color%})'
-    zstyle ':zim:git-info:stashed' format ' %{$azim_limegreen%}%{$azim_reset_color%}'
-    zstyle ':zim:git-info:unindexed' format $unindexed
-    zstyle ':zim:git-info:indexed' format ' %{$azim_limegreen%}↑%{$azim_reset_color%}'
-    zstyle ':zim:git-info:ahead' format ' %{$azim_magenta%}>%{$azim_reset_color%}'
-    zstyle ':zim:git-info:behind' format ' %{$azim_turquoise%}<%{$azim_reset_color%}'
-    zstyle ':zim:git-info:keys' format \
-        'status' '%S%I%i%A%B' \
-        'prompt' 'on %{$azim_turquoise%} %b%u%c%{$azim_reset_color%}%s${(e)git_info[status]:+"${(e)git_info[status]}"}'
-    add-zsh-hook precmd git-info
-  fi
-}
+if (( ${+functions[git-info]} )); then
+  zstyle ':zim:git-info' verbose yes
+  zstyle ':zim:git-info:branch' format '%b'
+  zstyle ':zim:git-info:commit' format 'HEAD %{$azim_limegreen%}(%c)%{$azim_reset_color%}'
+  zstyle ':zim:git-info:action' format '(%{$azim_magenta%}%a%{$azim_reset_color%})'
+  zstyle ':zim:git-info:stashed' format ' %{$azim_limegreen%}%{$azim_reset_color%}'
+  zstyle ':zim:git-info:unindexed' format ' %{$azim_orange%}!%{$azim_reset_color%}'
+  zstyle ':zim:git-info:untracked' format ' %{$azim_red%}?%{$azim_reset_color%}'
+  zstyle ':zim:git-info:indexed' format ' %{$azim_limegreen%}↑%{$azim_reset_color%}'
+  zstyle ':zim:git-info:ahead' format ' %{$azim_magenta%}>%{$azim_reset_color%}'
+  zstyle ':zim:git-info:behind' format ' %{$azim_turquoise%}<%{$azim_reset_color%}'
+  zstyle ':zim:git-info:keys' format \
+      'status' '%S%I%u%i%A%B' \
+      'prompt' 'on %{$azim_turquoise%} %b%{$azim_reset_color%}%s${(e)git_info[status]:+"${(e)git_info[status]}"}'
+  add-zsh-hook precmd git-info
+fi
 
 PS1='
 %(!.%B%{$azim_red%}%n%{$azim_reset_color%}%b in .${SSH_TTY:+"%{$azim_orange%}%n%{$azim_reset_color%} in "})${SSH_TTY:+"%{$azim_limegreen%}%m%{$azim_reset_color%} in "}%{$azim_limegreen%}%~%{$azim_reset_color%} ${(e)git_info[prompt]}${VIRTUAL_ENV:+" via %{$azim_orange%}${VIRTUAL_ENV:t}%{$azim_reset_color%}"}
