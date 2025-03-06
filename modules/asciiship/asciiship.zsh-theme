@@ -67,7 +67,7 @@ if (( ${+functions[git-info]} )); then
 fi
 
 PS1='
-%(!.%B%{$azim_red%}%n%{$azim_reset_color%}%b in .${SSH_TTY:+"%{$azim_orange%}%{$azim_bg_limegreen%}%{$azim_dark%}%n%{$azim_reset_color%}%{$azim_reset_bg%}%{$azim_orange%}%{$azim_reset_color%} in "})${SSH_TTY:+"%{$azim_limegreen%}%m%{$azim_reset_color%} in "}%{$azim_limegreen%}%~%{$azim_reset_color%} ${(e)git_info[prompt]}${VIRTUAL_ENV:+" via %{$azim_orange%}${VIRTUAL_ENV:t}%{$azim_reset_color%}"}
+%(!.%B%{$azim_red%}%n%{$azim_reset_color%}%b in .${SSH_TTY:+"%{$azim_limegreen%}%{$azim_bg_limegreen%}%{$azim_dark%}%n%{$azim_reset_color%}%{$azim_reset_bg%}%{$azim_limegreen%}%{$azim_reset_color%} in "})${SSH_TTY:+"%{$azim_limegreen%}%m%{$azim_reset_color%} in "}%{$azim_limegreen%}%~%{$azim_reset_color%} ${(e)git_info[prompt]}${VIRTUAL_ENV:+" via %{$azim_orange%}${VIRTUAL_ENV:t}%{$azim_reset_color%}"}
 %(?.%{$azim_limegreen%}.%{$azim_red%})$(_prompt_asciiship_vimode)%{$azim_reset_color%} '
 
 unset RPS1
