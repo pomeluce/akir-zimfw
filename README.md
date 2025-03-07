@@ -105,4 +105,5 @@ source ~/.zshrc
 - grs: git remote set-url origin url
 - gra: git remote add origin url
 - gfr: git fetch --all && git reset --hard origin && git pull
+- gsn: git show 'commit_id' --name-only
 <!-- ``` -->
