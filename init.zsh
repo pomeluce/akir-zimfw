@@ -1,6 +1,6 @@
 export AZIM_HOME=$(cd $(dirname $0);pwd)
 ZIM_CONFIG_FILE=$AZIM_HOME/zimrc
-ZIM_HOME=$AZIM_HOME/zim
+ZIM_HOME=$HOME/.cache/zim
 
 # Download zimfw plugin manager if missing.
 if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
