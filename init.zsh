@@ -1,4 +1,5 @@
 export AZIM_HOME=$(cd $(dirname $0);pwd)
+AZIM_CACHE=$HOME/.cache/azim
 ZIM_CONFIG_FILE=$AZIM_HOME/zimrc
 ZIM_HOME=$HOME/.cache/zim
 

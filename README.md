@@ -16,7 +16,6 @@
 
 ```
  .
-├── 󰃨 cache
 ├──  init.zsh
 ├──  LICENSE
 ├──  modules
@@ -77,7 +76,7 @@ source ~/.zshrc
 | 参数              | 默认值                              | 说明                                   |
 | ----------------- | ----------------------------------- | -------------------------------------- |
 | EXC_FOLDERS       | {.bzr,CVS,.git,.hg,.svn,.idea,.tox} | 设置 grep 命令要忽略的目录             |
-| ZSH_CACHE_DIR     | $AZIM_HOME/cache                    | 设置 zsh 的 cache 目录                 |
+| ZSH_CACHE_DIR     | $HOME/cache/azim                    | 设置 zsh 的 cache 目录                 |
 | CASE_SENSITIVE    | false                               | 设置大小写是否敏感                     |
 | AZIM_IN_LASTDIR   | false                               | 是否在启动时自动进入上次目录           |
 | AZIM_HISTORY_SHOW | true                                | 绑定 Ctrl + r 快捷键, 展示搜索历史命令 |

@@ -27,7 +27,7 @@ case ${HIST_STAMPS-} in
 esac
 
 ## History file configuration
-HISTFILE="$AZIM_HOME/cache/azimHistory"
+HISTFILE="$AZIM_CACHE/azimHistory"
 HISTSIZE=50000
 SAVEHIST=10000
 

@@ -2,7 +2,7 @@
 # try setting RUNEWIDTH_EASTASIAN to 1. If the border is still not properly rendered, set --no-unicode.
 export RUNEWIDTH_EASTASIAN=0
 
-export FZF_DEFAULT_OPTS="--height 16 --scrollbar=▌▐ --info=inline-right --layout=reverse --history=$AZIM_HOME/cache/fzfhistory"
+export FZF_DEFAULT_OPTS="--height 16 --scrollbar=▌▐ --info=inline-right --layout=reverse --history=$AZIM_CACHE/fzfhistory"
 export FZF_DEFAULT_COMMAND="fd --exclude={.git,.idea,.vscode,.sass-cache,node_modules,build,dist,vendor} --type f"
 export FZF_PREVIEW_COMMAND='zsh $AZIM_HOME/modules/fzf/file-preview.zsh {}'
 
