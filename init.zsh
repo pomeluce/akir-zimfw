@@ -3,6 +3,10 @@ AZIM_CACHE=$HOME/.cache/azim
 ZIM_CONFIG_FILE=$AZIM_HOME/zimrc
 ZIM_HOME=$HOME/.cache/zim
 
+if [[ ! -d ${AZIM_CACHE} ]]; then
+  mkdir $AZIM_CACHE
+fi
+
 # Download zimfw plugin manager if missing.
 if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
   curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
