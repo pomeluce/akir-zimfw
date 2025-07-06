@@ -2,8 +2,8 @@
 
 _prompt_asciiship_vimode() {
   case ${KEYMAP} in
-    vicmd) print -n '%S%(!.#.)%s' ;;
-    *) print -n '%(!.#.)' ;;
+    vicmd) print -n '%S%(!.#.)%s' ;;
+    *) print -n '%(!.#.)' ;;
   esac
 }
 
@@ -13,7 +13,7 @@ _prompt_asciiship_keymap_select() {
 }
 if autoload -Uz is-at-least && is-at-least 5.3; then
   autoload -Uz add-zle-hook-widget && \
-      add-zle-hook-widget -Uz keymap-select _prompt_asciiship_keymap_select
+    add-zle-hook-widget -Uz keymap-select _prompt_asciiship_keymap_select
 else
   zle -N zle-keymap-select _prompt_asciiship_keymap_select
 fi
@@ -61,13 +61,13 @@ if (( ${+functions[git-info]} )); then
   zstyle ':zim:git-info:ahead' format ' %{$azim_magenta%}>%{$azim_reset_color%}'
   zstyle ':zim:git-info:behind' format ' %{$azim_turquoise%}<%{$azim_reset_color%}'
   zstyle ':zim:git-info:keys' format \
-      'status' '%S%I%u%i%A%B' \
-      'prompt' 'on %{$azim_turquoise%} %b%{$azim_reset_color%}%s${(e)git_info[status]:+"${(e)git_info[status]}"}'
+    'status' '%S%I%u%i%A%B' \
+    'prompt' 'on %{$azim_turquoise%} %b%{$azim_reset_color%}%s${(e)git_info[status]:+"${(e)git_info[status]}"}'
   add-zsh-hook precmd git-info
 fi
 
 PS1='
-%(!.%B%{$azim_red%}%n%{$azim_reset_color%}%b in .${SSH_TTY:+"%{$azim_limegreen%}%{$azim_bg_limegreen%}%{$azim_dark%}%n%{$azim_reset_color%}%{$azim_reset_bg%}%{$azim_limegreen%}%{$azim_reset_color%} in "})${SSH_TTY:+"%{$azim_limegreen%}%m%{$azim_reset_color%} in "}%{$azim_limegreen%}%~%{$azim_reset_color%} ${(e)git_info[prompt]}${VIRTUAL_ENV:+" via %{$azim_orange%}${VIRTUAL_ENV:t}%{$azim_reset_color%}"}
+%(!.%B%{$azim_red%}%n%{$azim_reset_color%}%b in .${SSH_TTY:+"%{$azim_limegreen%}%{$azim_bg_limegreen%}%{$azim_dark%}%n%{$azim_reset_color%}%{$azim_reset_bg%}%{$azim_limegreen%}%{$azim_reset_color%} in "})${SSH_TTY:+"%{$azim_limegreen%}%m%{$azim_reset_color%} in "}%{$azim_limegreen%} %~%{$azim_reset_color%} ${(e)git_info[prompt]}${VIRTUAL_ENV:+" via %{$azim_orange%}${VIRTUAL_ENV:t}%{$azim_reset_color%}"}
 %(?.%{$azim_limegreen%}.%{$azim_red%})$(_prompt_asciiship_vimode)%{$azim_reset_color%} '
 
 unset RPS1
