@@ -9,4 +9,5 @@ zmodule zsh-users/zsh-autosuggestions
 zmodule zsh-users/zsh-syntax-highlighting
 zmodule $AZIM_HOME/modules/fzf-tab-hook
 zmodule $AZIM_HOME/modules/git
+zmodule $AZIM_HOME/modules/nix
 zmodule $AZIM_HOME/modules/fzf
