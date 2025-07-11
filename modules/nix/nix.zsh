@@ -1,0 +1,34 @@
+alias nx-switch='sudo nixos-rebuild switch --flake .'
+alias nx-test='sudo nixos-rebuild test --flake .'
+alias nx-boot='sudo nixos-rebuild boot --flake .'
+alias nx-history='nix profile history --profile /nix/var/nix/profiles/system'
+
+function nxgc() {
+  local older_than=${1:-7d}
+  sudo nix profile wipe-history --older-than "$older_than" --profile /nix/var/nix/profiles/system
+  sudo nix-collect-garbage -d --delete-older-than "$older_than"
+  nix-collect-garbage -d --delete-older-than "$older_than"
+}
+
+function nxrun() {
+  local pkg=$1
+  local name
+  case "$pkg" in
+    github:*|.*|/*|*#*) name=$pkg ;;  # 支持 GitHub 引用、本地路径、带 # 的 flake
+    *) name="nixpkgs#$pkg" ;;       # 其余映射到 nixpkgs
+  esac
+  nix run "$name"
+}
+
+function nx() {
+  local args=($@)
+  local pkgs=()
+  for pkg in "${args[@]}"; do
+    case "$pkg" in
+      github:*|.*|/*|*#*) pkgs+=("$pkg") ;;  # 保持原样
+      *) pkgs+=("nixpkgs#$pkg") ;;             # 映射到 nixpkgs
+    esac
+  done
+  echo "Entering shell with: ${pkgs[*]}"
+  nix shell "${pkgs[@]}"
+}
