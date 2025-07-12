@@ -34,7 +34,7 @@
 
 ```
 1. 默认 shell 必须为 zsh
-2. 需要安装 fd, exa, bat, fzf, ueberzug, lsd(可选), git, lua
+2. 需要安装 fd, exa, bat, fzf, ueberzug, jq, lsd(可选), git, lua
 ```
 
 ### 安装使用

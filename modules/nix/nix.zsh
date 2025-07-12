@@ -31,6 +31,21 @@ function nxrun() {
   nix run "$name"
 }
 
+function nxsearch() {
+  local name=$1
+  nix search nixpkgs "$name" --json |
+  jq -r --arg name "$name" '
+      to_entries[] |
+      (.key | gsub("^legacyPackages\\.x86_64-linux\\."; "")) as $k |
+      select($k | test($name; "i")) |
+      if (.value.description != null and .value.description != "") then
+        "\($k): \(.value.version): \(.value.description)"
+      else
+        "\($k): \(.value.version)"
+      end
+  '
+}
+
 function nx() {
   local args=($@)
   local pkgs=()
