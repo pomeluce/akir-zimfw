@@ -4,10 +4,21 @@ alias nx-boot='sudo nixos-rebuild boot --flake .'
 alias nx-history='nix profile history --profile /nix/var/nix/profiles/system'
 
 function nxgc() {
+  function _nxgc_all() {
+    sudo nix profile wipe-history --profile /nix/var/nix/profiles/system
+    sudo nix-collect-garbage -d
+    nix-collect-garbage -d
+  }
+
   local older_than=${1:-7d}
-  sudo nix profile wipe-history --older-than "$older_than" --profile /nix/var/nix/profiles/system
-  sudo nix-collect-garbage -d --delete-older-than "$older_than"
-  nix-collect-garbage -d --delete-older-than "$older_than"
+
+  if [[ "$1" == "--all" || "$1" == "-a" ]]; then
+    _nxgc_all
+  else
+    sudo nix profile wipe-history --older-than "$older_than" --profile /nix/var/nix/profiles/system
+    sudo nix-collect-garbage -d --delete-older-than "$older_than"
+    nix-collect-garbage -d --delete-older-than "$older_than"
+  fi
 }
 
 function nxrun() {
