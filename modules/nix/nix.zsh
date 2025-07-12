@@ -39,9 +39,11 @@ function nxsearch() {
       (.key | gsub("^legacyPackages\\.x86_64-linux\\."; "")) as $k |
       select($k | test($name; "i")) |
       if (.value.description != null and .value.description != "") then
-        "\($k): \(.value.version): \(.value.description)"
+        "\($k)(\(.value.version)): \(.value.description)"
+      elif (.value.version != null and .value.version != "") then
+        "\($k)(\(.value.version))"
       else
-        "\($k): \(.value.version)"
+        "\($k)"
       end
   '
 }
