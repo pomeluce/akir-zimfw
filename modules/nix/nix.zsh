@@ -1,7 +1,8 @@
-alias nx-switch='sudo nixos-rebuild switch --flake .'
-alias nx-test='sudo nixos-rebuild test --flake .'
-alias nx-boot='sudo nixos-rebuild boot --flake .'
-alias nx-history='nix profile history --profile /nix/var/nix/profiles/system'
+alias nxswitch='sudo nixos-rebuild switch --flake .'
+alias nxtest='sudo nixos-rebuild test --flake .'
+alias nxboot='sudo nixos-rebuild boot --flake .'
+alias nxhistory='nix profile history --profile /nix/var/nix/profiles/system'
+alias nxupdate='nix flake update'
 
 function nxgc() {
   function _nxgc_all() {
