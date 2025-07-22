@@ -3,6 +3,7 @@ alias nxtest='sudo nixos-rebuild test --flake .'
 alias nxboot='sudo nixos-rebuild boot --flake .'
 alias nxhistory='nix profile history --profile /nix/var/nix/profiles/system'
 alias nxupdate='nix flake update'
+alias nxdev='nix develop'
 
 function nxgc() {
   function _nxgc_all() {
