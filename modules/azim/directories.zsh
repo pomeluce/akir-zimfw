@@ -62,3 +62,7 @@ else
   alias ll='ls -lh'
   alias la='ls -lAh'
 fi
+
+function rp() {
+  realpath "$(which $1)"
+}
