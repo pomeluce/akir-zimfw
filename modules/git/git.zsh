@@ -9,6 +9,7 @@ authorColor="#ff5252"
 
 alias gc='git clone ${1} ${2}'
 alias gco='git checkout'
+alias gb='git branch'
 alias gpu='git push origin $(git symbolic-ref --short -q HEAD)'
 alias gpd='git pull origin $(git symbolic-ref --short -q HEAD) --ff-only'
 alias gd='git --no-pager diff'
