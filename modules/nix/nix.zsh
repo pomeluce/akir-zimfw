@@ -123,8 +123,11 @@ nxhash() {
     from_format="$from_hint"
   fi
 
+  # 生成安全的文件名
+  safe_name=$(basename "$url" | sed -E 's/%[0-9A-Fa-f]{2}/_/g; s/[^a-zA-Z0-9._+-]/_/g')
+
   # 获取原始哈希
-  raw_hash=$(nix-prefetch-url --type "$hash_type" "$url" | tee /dev/tty | awk 'END{print $NF}')
+  raw_hash=$(nix-prefetch-url --type "$hash_type" --name "$safe_name" "$url" | tee /dev/tty | awk 'END{print $NF}')
 
   if [[ -z "$raw_hash" ]]; then
     echo "Failed to obtain hash from nix-prefetch-url"
