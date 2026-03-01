@@ -3,6 +3,8 @@ alias nxtest='sudo nixos-rebuild test --flake .'
 alias nxboot='sudo nixos-rebuild boot --flake .'
 alias nxhistory='nix profile history --profile /nix/var/nix/profiles/system'
 alias nxupdate='nix flake update'
+alias nxshow='nix flake show'
+alias nxcheck='nix flake check'
 alias nxdev='nix develop'
 
 function nxgc() {
@@ -143,3 +145,6 @@ nxhash() {
     nix hash convert --hash-algo "$hash_type" --from "$from_format" --to sri "$raw_hash"
   fi
 }
+
+alias hm='home-manager'
+alias hmswitch='home-manager switch --flake .#$HOST'
