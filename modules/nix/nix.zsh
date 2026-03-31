@@ -148,3 +148,22 @@ nxhash() {
 
 alias hm='home-manager'
 alias hmswitch='home-manager switch --flake .#$HOST'
+alias hmhistory="nix profile history --profile $HOME/.local/state/nix/profiles/home-manager"
+
+function hmgc() {
+  local hm_profile="$HOME/.local/state/nix/profiles/home-manager"
+
+  if [[ ! -e "$hm_profile" ]]; then
+    echo "Error: home-manager profile not found at $hm_profile"
+    return 1
+  fi
+
+  if [[ "$1" == "--all" || "$1" == "-a" ]]; then
+    nix profile wipe-history --profile "$hm_profile"
+    nix-collect-garbage -d
+  else
+    local older_than=${1:-7d}
+    nix profile wipe-history --older-than "$older_than" --profile "$hm_profile"
+    nix-collect-garbage -d --delete-older-than "$older_than"
+  fi
+}
