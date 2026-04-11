@@ -27,7 +27,7 @@ alias rmf='rm -rf'
 alias lnk='ln -s'
 alias rlnk='ln -snf'
 alias ds='du -sh ./* | sort -hr'
-command -v bat &> /dev/null && alias cat ='bat -p'
+command -v bat &> /dev/null && alias cat='bat -p'
 
 # deveop commands alias
 command -v nvim &> /dev/null && alias v='nvim'
