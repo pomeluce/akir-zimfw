@@ -28,5 +28,5 @@ gm() { git commit -m "$*" }
 gam() { git add --all && git commit -m "$*" }
 git_log() { git --no-pager log --date=format:'%Y-%m-%d %H:%M'  --pretty=tformat:$1 --graph -n ${2-10} }
 gll() { git_log "%C(${hashColor})%h %C(${contentColor})%s%Creset" $1 }
-
 glla() { git_log "%C(${hashColor})%h %C(${dateColor})%cd %C(${authorColor})%cn: %C(${contentColor})%s%C(${headColor})%d%Creset" $1 }
+gsd() { git show $1 -- $2 }
