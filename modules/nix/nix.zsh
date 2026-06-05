@@ -147,7 +147,7 @@ nxhash() {
 }
 
 alias hm='home-manager'
-alias hmswitch='home-manager switch --flake .#$HOST'
+alias hmswitch='home-manager switch --flake .#$(hostname -s)'
 alias hmhistory="nix profile history --profile $HOME/.local/state/nix/profiles/home-manager"
 
 function hmgc() {
