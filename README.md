@@ -275,7 +275,7 @@ user at host in  /etc/nixos on  main ↑ via myenv 
 [  ~/project ] [  main ↑? ] 
 
 # SSH 远程 + Git + venv
-[ user:host ] [  /etc/nixos ] [  main ↑ ] [  myenv ] 
+[ user ] [  /etc/nixos ] [  main ↑ ] [  myenv ] 
 ```
 
 通过 `AZIM_PROMPT_STYLE` 环境变量或 Nix 选项 `promptStyle` 切换。
