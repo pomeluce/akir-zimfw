@@ -258,16 +258,24 @@ source ~/.config/akir-zimfw/init.zsh
 
 ## 提示符风格
 
-**紧凑风格（compact）**— 默认：
+**紧凑风格（compact）**— 默认，行内纯文本 + 连接词：
 
 ```
-username in ~/project on  main ↑? 
+# 本地 + Git 仓库
+ ~/project on  main ↑? 
+
+# SSH 远程 + Git + venv
+user at host in  /etc/nixos on  main ↑ via myenv 
 ```
 
-**分段风格（segments）**— 各部分之间有更清晰的间隔：
+**分段风格（segments）**— 每模块独立背景色 pill，无连接词：
 
 ```
-username in ~/project  on  main ↑?  
+# 本地 + Git 仓库
+[  ~/project ] [  main ↑? ] 
+
+# SSH 远程 + Git + venv
+[ user:host ] [  /etc/nixos ] [  main ↑ ] [  myenv ] 
 ```
 
 通过 `AZIM_PROMPT_STYLE` 环境变量或 Nix 选项 `promptStyle` 切换。
