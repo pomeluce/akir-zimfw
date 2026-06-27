@@ -37,6 +37,7 @@ if [[ "${terminfo[colors]}" -ge 256 ]]; then
   azim_bg_orange="%K{179}"
   azim_bg_red="%K{167}"
   azim_bg_subtle="%K{236}"
+  azim_subtle="%F{236}"
   azim_magenta="%F{177}"
 else
   azim_dark="%F{black}"
@@ -48,6 +49,7 @@ else
   azim_bg_orange="%K{yellow}"
   azim_bg_red="%K{red}"
   azim_bg_subtle="%K{black}"
+  azim_subtle="%F{black}"
   azim_magenta="%F{magenta}"
 fi
 # Reset color.
@@ -127,7 +129,7 @@ _prompt_asciiship_segments_path_segment() {
 _prompt_asciiship_segments_git_segment() {
   local git_prompt
   git_prompt=$(_prompt_asciiship_expand_prompt "${git_info[prompt]}")
-  [[ -n ${git_prompt} ]] && print -n -- "%{$azim_bg_subtle%} ${git_prompt} %{$azim_reset_bg%}%{$azim_reset_color%} "
+  [[ -n ${git_prompt} ]] && print -n -- "%{$azim_subtle%}%{$azim_bg_subtle%} ${git_prompt} %{$azim_reset_bg%}%{$azim_subtle%}%{$azim_reset_color%} "
 }
 
 _prompt_asciiship_segments_env_segment() {
