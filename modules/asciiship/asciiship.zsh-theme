@@ -18,11 +18,13 @@ else
   zle -N zle-keymap-select _prompt_asciiship_keymap_select
 fi
 
-typeset -g VIRTUAL_ENV_DISABLE_PROMPT=1
+typeset -gx VIRTUAL_ENV_DISABLE_PROMPT=1
 
 setopt nopromptbang prompt{cr,percent,sp,subst}
 
 autoload -Uz add-zsh-hook
+zmodload zsh/terminfo 2>/dev/null || true
+typeset -gA terminfo
 
 # Use True color (24-bit) if available.
 if [[ "${terminfo[colors]}" -ge 256 ]]; then
@@ -52,22 +54,80 @@ typeset -gA git_info
 if (( ${+functions[git-info]} )); then
   zstyle ':zim:git-info' verbose yes
   zstyle ':zim:git-info:branch' format '%b'
-  zstyle ':zim:git-info:commit' format 'HEAD %{$azim_limegreen%}(%c)%{$azim_reset_color%}'
-  zstyle ':zim:git-info:action' format '(%{$azim_magenta%}%a%{$azim_reset_color%})'
-  zstyle ':zim:git-info:stashed' format ' %{$azim_limegreen%}%{$azim_reset_color%}'
-  zstyle ':zim:git-info:unindexed' format ' %{$azim_orange%}!%{$azim_reset_color%}'
-  zstyle ':zim:git-info:untracked' format ' %{$azim_red%}?%{$azim_reset_color%}'
-  zstyle ':zim:git-info:indexed' format ' %{$azim_limegreen%}↑%{$azim_reset_color%}'
-  zstyle ':zim:git-info:ahead' format ' %{$azim_magenta%}>%{$azim_reset_color%}'
-  zstyle ':zim:git-info:behind' format ' %{$azim_turquoise%}<%{$azim_reset_color%}'
+  zstyle ':zim:git-info:commit' format "HEAD %{$azim_limegreen%}(%c)%{$azim_reset_color%}"
+  zstyle ':zim:git-info:action' format "(%{$azim_magenta%}%a%{$azim_reset_color%})"
+  zstyle ':zim:git-info:stashed' format " %{$azim_limegreen%}%{$azim_reset_color%}"
+  zstyle ':zim:git-info:unindexed' format " %{$azim_orange%}!%{$azim_reset_color%}"
+  zstyle ':zim:git-info:untracked' format " %{$azim_red%}?%{$azim_reset_color%}"
+  zstyle ':zim:git-info:indexed' format " %{$azim_limegreen%}↑%{$azim_reset_color%}"
+  zstyle ':zim:git-info:ahead' format " %{$azim_magenta%}>%{$azim_reset_color%}"
+  zstyle ':zim:git-info:behind' format " %{$azim_turquoise%}<%{$azim_reset_color%}"
   zstyle ':zim:git-info:keys' format \
     'status' '%S%I%u%i%A%B' \
-    'prompt' 'on %{$azim_turquoise%} %b%{$azim_reset_color%}%s${(e)git_info[status]:+"${(e)git_info[status]}"}'
+    'prompt' "on %{$azim_turquoise%} %b%{$azim_reset_color%}%s\${git_info[status]:+\"\${git_info[status]}\"}"
   add-zsh-hook precmd git-info
 fi
 
-PS1='
-%(!.%B%{$azim_red%}%n%{$azim_reset_color%}%b in .${SSH_TTY:+"%{$azim_limegreen%}%{$azim_bg_limegreen%}%{$azim_dark%}%n%{$azim_reset_color%}%{$azim_reset_bg%}%{$azim_limegreen%}%{$azim_reset_color%} in "})${SSH_TTY:+"%{$azim_limegreen%}%m%{$azim_reset_color%} in "}%{$azim_limegreen%} %~%{$azim_reset_color%} ${(e)git_info[prompt]}${VIRTUAL_ENV:+" via %{$azim_orange%}${VIRTUAL_ENV:t}%{$azim_reset_color%}"}${CONDA_DEFAULT_ENV:+" via %{$azim_orange%}${CONDA_DEFAULT_ENV:t}%{$azim_reset_color%}"}
-%(?.%{$azim_limegreen%}.%{$azim_red%})$(_prompt_asciiship_vimode)%{$azim_reset_color%} '
+_prompt_asciiship_user_host_segment() {
+  if (( EUID == 0 )); then
+    print -n "%B%{$azim_red%}%n%{$azim_reset_color%}%b in "
+  elif [[ -n ${SSH_TTY} ]]; then
+    print -n "%{$azim_limegreen%}%{$azim_bg_limegreen%}%{$azim_dark%}%n%{$azim_reset_color%}%{$azim_reset_bg%}%{$azim_limegreen%}%{$azim_reset_color%} in %{$azim_limegreen%}%m%{$azim_reset_color%} in "
+  fi
+}
+
+_prompt_asciiship_path_segment() {
+  print -n "%{$azim_limegreen%} %~%{$azim_reset_color%}"
+}
+
+_prompt_asciiship_expand_prompt() {
+  local prompt_text=${1-}
+  eval "prompt_text=\"${prompt_text}\""
+  eval "prompt_text=\"${prompt_text}\""
+  print -n -- "${prompt_text}"
+}
+
+_prompt_asciiship_git_segment() {
+  _prompt_asciiship_expand_prompt "${git_info[prompt]}"
+}
+
+_prompt_asciiship_env_segment() {
+  [[ -n ${VIRTUAL_ENV} ]] && print -n -- " via %{$azim_orange%}${VIRTUAL_ENV:t}%{$azim_reset_color%}"
+  [[ -n ${CONDA_DEFAULT_ENV} ]] && print -n -- " via %{$azim_orange%}${CONDA_DEFAULT_ENV:t}%{$azim_reset_color%}"
+  return 0
+}
+
+_prompt_asciiship_segments_path_segment() {
+  print -n "%{$azim_limegreen%} %~%{$azim_reset_color%}"
+}
+
+_prompt_asciiship_segments_git_segment() {
+  local git_prompt
+  git_prompt=$(_prompt_asciiship_expand_prompt "${git_info[prompt]}")
+  [[ -n ${git_prompt} ]] && print -n -- "  ${git_prompt}"
+}
+
+_prompt_asciiship_segments_env_segment() {
+  [[ -n ${VIRTUAL_ENV} ]] && print -n -- " %{$azim_orange%}via ${VIRTUAL_ENV:t}%{$azim_reset_color%}"
+  [[ -n ${CONDA_DEFAULT_ENV} ]] && print -n -- " %{$azim_orange%}via ${CONDA_DEFAULT_ENV:t}%{$azim_reset_color%}"
+  return 0
+}
+
+typeset -g _prompt_asciiship_compact_ps1="
+\$(_prompt_asciiship_user_host_segment)\$(_prompt_asciiship_path_segment) \$(_prompt_asciiship_git_segment)\$(_prompt_asciiship_env_segment)
+%(?.%{$azim_limegreen%}.%{$azim_red%})\$(_prompt_asciiship_vimode)%{$azim_reset_color%} "
+
+typeset -g _prompt_asciiship_segments_ps1="
+\$(_prompt_asciiship_user_host_segment)\$(_prompt_asciiship_segments_path_segment)\$(_prompt_asciiship_segments_git_segment)\$(_prompt_asciiship_segments_env_segment)
+%(?.%{$azim_limegreen%}.%{$azim_red%})\$(_prompt_asciiship_vimode)%{$azim_reset_color%} "
+
+case ${AZIM_PROMPT_STYLE:-compact} in
+  segments)
+    PS1=${_prompt_asciiship_segments_ps1}
+    ;;
+  compact|*)
+    PS1=${_prompt_asciiship_compact_ps1}
+    ;;
+esac
 
 unset RPS1

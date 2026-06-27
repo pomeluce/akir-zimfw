@@ -73,13 +73,35 @@ source ~/.zshrc
 
 ### 可选配置
 
-| 参数              | 默认值                              | 说明                                   |
-| ----------------- | ----------------------------------- | -------------------------------------- |
-| EXC_FOLDERS       | {.bzr,CVS,.git,.hg,.svn,.idea,.tox} | 设置 grep 命令要忽略的目录             |
-| ZSH_CACHE_DIR     | $HOME/cache/azim                    | 设置 zsh 的 cache 目录                 |
-| CASE_SENSITIVE    | false                               | 设置大小写是否敏感                     |
-| AZIM_IN_LASTDIR   | false                               | 是否在启动时自动进入上次目录           |
-| AZIM_HISTORY_SHOW | true                                | 绑定 Ctrl + r 快捷键, 展示搜索历史命令 |
+| 参数              | 默认值                              | 说明                                      |
+| ----------------- | ----------------------------------- | ----------------------------------------- |
+| EXC_FOLDERS       | {.bzr,CVS,.git,.hg,.svn,.idea,.tox} | 设置 grep 命令要忽略的目录                |
+| ZSH_CACHE_DIR     | $HOME/cache/azim                    | 设置 zsh 的 cache 目录                    |
+| CASE_SENSITIVE    | false                               | 设置大小写是否敏感                        |
+| AZIM_IN_LASTDIR   | false                               | 是否在启动时自动进入上次目录              |
+| AZIM_HISTORY_SHOW | true                                | 绑定 Ctrl + r 快捷键，展示搜索历史命令    |
+| AZIM_PROMPT_STYLE | compact                             | 设置提示符风格，可选 compact 或 segments  |
+
+#### 切换提示符风格
+
+默认使用紧凑风格：
+
+```zsh
+export AZIM_PROMPT_STYLE=compact
+```
+
+可切换为分段风格：
+
+```zsh
+export AZIM_PROMPT_STYLE=segments
+```
+
+建议在加载 akir-zimfw 前设置：
+
+```zsh
+export AZIM_PROMPT_STYLE=segments
+source ~/.config/akir-zimfw/init.zsh
+```
 
 ### git 快捷命令
 
