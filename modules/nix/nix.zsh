@@ -1,16 +1,33 @@
-alias nxswitch='sudo nixos-rebuild switch --flake .'
-alias nxtest='sudo nixos-rebuild test --flake .'
-alias nxboot='sudo nixos-rebuild boot --flake .'
-alias nxhistory='nix profile history --profile /nix/var/nix/profiles/system'
+# Only load if Nix is available
+command -v nix >/dev/null 2>&1 || return 0
+
+# ── nixos-rebuild (NixOS only) ──────────────────────────────────────────────
+if command -v nixos-rebuild >/dev/null 2>&1; then
+  alias nxswitch='sudo nixos-rebuild switch --flake .'
+  alias nxtest='sudo nixos-rebuild test --flake .'
+  alias nxboot='sudo nixos-rebuild boot --flake .'
+fi
+
+# ── nix profile ─────────────────────────────────────────────────────────────
+if nix profile history --help >/dev/null 2>&1; then
+  if [[ -e /nix/var/nix/profiles/system ]]; then
+    alias nxhistory='nix profile history --profile /nix/var/nix/profiles/system'
+  fi
+fi
+
+# ── nix flake ───────────────────────────────────────────────────────────────
 alias nxupdate='nix flake update'
 alias nxshow='nix flake show'
 alias nxcheck='nix flake check'
 alias nxdev='nix develop'
 
+# ── nxgc: Nix garbage collection ────────────────────────────────────────────
 function nxgc() {
   function _nxgc_all() {
-    sudo nix profile wipe-history --profile /nix/var/nix/profiles/system
-    sudo nix-collect-garbage -d
+    if command -v nixos-rebuild >/dev/null 2>&1; then
+      sudo nix profile wipe-history --profile /nix/var/nix/profiles/system 2>/dev/null
+      sudo nix-collect-garbage -d
+    fi
     nix-collect-garbage -d
   }
 
@@ -19,52 +36,60 @@ function nxgc() {
   if [[ "$1" == "--all" || "$1" == "-a" ]]; then
     _nxgc_all
   else
-    sudo nix profile wipe-history --older-than "$older_than" --profile /nix/var/nix/profiles/system
-    sudo nix-collect-garbage -d --delete-older-than "$older_than"
+    if command -v nixos-rebuild >/dev/null 2>&1; then
+      sudo nix profile wipe-history --older-than "$older_than" --profile /nix/var/nix/profiles/system 2>/dev/null
+      sudo nix-collect-garbage -d --delete-older-than "$older_than"
+    fi
     nix-collect-garbage -d --delete-older-than "$older_than"
   fi
 }
 
+# ── nxrun: nix run (with smart package resolution) ──────────────────────────
 function nxrun() {
   local pkg=$1
   local name
   case "$pkg" in
-    github:*|.*|/*|*#*) name=$pkg ;;  # 支持 GitHub 引用、本地路径、带 # 的 flake
-    *) name="nixpkgs#$pkg" ;;       # 其余映射到 nixpkgs
+    github:*|.*|/*|*#*) name=$pkg ;;  # GitHub refs, local paths, flake refs
+    *) name="nixpkgs#$pkg" ;;         # plain package name → nixpkgs
   esac
   nix run "$name"
 }
 
-function nxsearch() {
-  local name=$1
-  nix search nixpkgs "$name" --json |
-  jq -r --arg name "$name" '
-      to_entries[] |
-      (.key | gsub("^legacyPackages\\.x86_64-linux\\."; "")) as $k |
-      select($k | test($name; "i")) |
-      if (.value.description != null and .value.description != "") then
-        "\($k)(\(.value.version)): \(.value.description)"
-      elif (.value.version != null and .value.version != "") then
-        "\($k)(\(.value.version))"
-      else
-        "\($k)"
-      end
-  '
-}
+# ── nxsearch: search nixpkgs ────────────────────────────────────────────────
+if command -v jq >/dev/null 2>&1; then
+  function nxsearch() {
+    local name=$1
+    nix search nixpkgs "$name" --json |
+    jq -r --arg name "$name" '
+        to_entries[] |
+        (.key | gsub("^legacyPackages\\.x86_64-linux\\."; "")) as $k |
+        select($k | test($name; "i")) |
+        if (.value.description != null and .value.description != "") then
+          "\($k)(\(.value.version)): \(.value.description)"
+        elif (.value.version != null and .value.version != "") then
+          "\($k)(\(.value.version))"
+        else
+          "\($k)"
+        end
+    '
+  }
+fi
 
+# ── nx: nix shell with smart package resolution ─────────────────────────────
 function nx() {
   local args=($@)
   local pkgs=()
   for pkg in "${args[@]}"; do
     case "$pkg" in
-      github:*|.*|/*|*#*) pkgs+=("$pkg") ;;  # 保持原样
-      *) pkgs+=("nixpkgs#$pkg") ;;             # 映射到 nixpkgs
+      github:*|.*|/*|*#*) pkgs+=("$pkg") ;;
+      *) pkgs+=("nixpkgs#$pkg") ;;
     esac
   done
   echo "Entering shell with: ${pkgs[*]}"
   nix shell "${pkgs[@]}"
 }
 
+# ── nxhash: compute SRI hash for a file URL ────────────────────────────────
 nxhash() {
   if [[ $# -lt 1 ]]; then
     echo "Usage: nxhash [--both] [hash-type] <url>"
@@ -76,13 +101,13 @@ nxhash() {
   local both="false"
   local hash_type url raw_hash from_hint from_format help_out
 
-  # 检查是否有 --both
+  # Check for --both
   if [[ "$1" == "--both" ]]; then
     both="true"
     shift
   fi
 
-  # 解析参数
+  # Parse arguments
   if [[ $# -ge 2 ]]; then
     hash_type="$1"
     url="$2"
@@ -105,7 +130,7 @@ nxhash() {
     return 1
   fi
 
-  # 检测 nix hash convert 支持的 base32 选项
+  # Detect nix hash convert supported base32 option
   if help_out=$(nix hash convert --help 2>&1); then
     if echo "$help_out" | grep -q 'nix32'; then
       from_hint="nix32"
@@ -118,17 +143,17 @@ nxhash() {
     from_hint="nix32"
   fi
 
-  # nix-prefetch-url 输出编码: md5 是 base16, 其余是 base32/nix32
+  # nix-prefetch-url output encoding: md5 is base16, others are base32/nix32
   if [[ "$hash_type" == "md5" ]]; then
     from_format="base16"
   else
     from_format="$from_hint"
   fi
 
-  # 生成安全的文件名
+  # Generate a safe file name
   safe_name=$(basename "$url" | sed -E 's/%[0-9A-Fa-f]{2}/_/g; s/[^a-zA-Z0-9._+-]/_/g')
 
-  # 获取原始哈希
+  # Get raw hash
   raw_hash=$(nix-prefetch-url --type "$hash_type" --name "$safe_name" "$url" | tee /dev/tty | awk 'END{print $NF}')
 
   if [[ -z "$raw_hash" ]]; then
@@ -146,24 +171,30 @@ nxhash() {
   fi
 }
 
-alias hm='home-manager'
-alias hmswitch='home-manager switch --flake .#$(hostname -s)'
-alias hmhistory="nix profile history --profile $HOME/.local/state/nix/profiles/home-manager"
+# ── home-manager ────────────────────────────────────────────────────────────
+if command -v home-manager >/dev/null 2>&1; then
+  alias hm='home-manager'
+  alias hmswitch='home-manager switch --flake .#$(hostname -s)'
 
-function hmgc() {
-  local hm_profile="$HOME/.local/state/nix/profiles/home-manager"
-
-  if [[ ! -e "$hm_profile" ]]; then
-    echo "Error: home-manager profile not found at $hm_profile"
-    return 1
+  if [[ -e "$HOME/.local/state/nix/profiles/home-manager" ]]; then
+    alias hmhistory="nix profile history --profile $HOME/.local/state/nix/profiles/home-manager"
   fi
 
-  if [[ "$1" == "--all" || "$1" == "-a" ]]; then
-    nix profile wipe-history --profile "$hm_profile"
-    nix-collect-garbage -d
-  else
-    local older_than=${1:-7d}
-    nix profile wipe-history --older-than "$older_than" --profile "$hm_profile"
-    nix-collect-garbage -d --delete-older-than "$older_than"
-  fi
-}
+  function hmgc() {
+    local hm_profile="$HOME/.local/state/nix/profiles/home-manager"
+
+    if [[ ! -e "$hm_profile" ]]; then
+      echo "Error: home-manager profile not found at $hm_profile"
+      return 1
+    fi
+
+    if [[ "$1" == "--all" || "$1" == "-a" ]]; then
+      nix profile wipe-history --profile "$hm_profile"
+      nix-collect-garbage -d
+    else
+      local older_than=${1:-7d}
+      nix profile wipe-history --older-than "$older_than" --profile "$hm_profile"
+      nix-collect-garbage -d --delete-older-than "$older_than"
+    fi
+  }
+fi

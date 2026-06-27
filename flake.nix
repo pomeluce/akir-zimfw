@@ -71,6 +71,51 @@
               example = lib.literalExpression "with pkgs; [ lsd jq ]";
               description = "Additional optional packages for akir-zimfw integrations.";
             };
+
+            grepExcludeFolders = lib.mkOption {
+              type = lib.types.str;
+              default = "{.bzr,CVS,.git,.hg,.svn,.idea,.tox}";
+              example = "{.git,.hg,.svn,.idea,.tox,node_modules,target}";
+              description = "Directories to exclude from grep searches (sets EXC_FOLDERS).";
+            };
+
+            zshCacheDir = lib.mkOption {
+              type = lib.types.str;
+              default = "$HOME/.cache/azim";
+              example = "$HOME/.cache/my-zsh";
+              description = "Directory for zsh cache files (sets ZSH_CACHE_DIR).";
+            };
+
+            caseSensitive = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              example = true;
+              description = "Whether tab completion should be case-sensitive (sets CASE_SENSITIVE).";
+            };
+
+            autoInLastDir = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              example = true;
+              description = "Whether to automatically enter the last working directory on shell start (sets AZIM_IN_LASTDIR).";
+            };
+
+            historyShow = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              example = false;
+              description = "Whether to bind Ctrl+R to fzf-powered history search (sets AZIM_HISTORY_SHOW).";
+            };
+
+            promptStyle = lib.mkOption {
+              type = lib.types.enum [
+                "compact"
+                "segments"
+              ];
+              default = "compact";
+              example = "segments";
+              description = "Prompt display style (sets AZIM_PROMPT_STYLE).";
+            };
           };
 
           config = lib.mkIf cfg.enable {
@@ -80,6 +125,12 @@
 
             programs.zsh.enable = lib.mkDefault true;
             programs.zsh.initContent = lib.mkAfter ''
+              export EXC_FOLDERS="${cfg.grepExcludeFolders}"
+              export ZSH_CACHE_DIR="${cfg.zshCacheDir}"
+              export CASE_SENSITIVE="${if cfg.caseSensitive then "true" else "false"}"
+              export AZIM_IN_LASTDIR="${if cfg.autoInLastDir then "true" else "false"}"
+              export AZIM_HISTORY_SHOW="${if cfg.historyShow then "true" else "false"}"
+              export AZIM_PROMPT_STYLE="${cfg.promptStyle}"
               source ${config.home.homeDirectory}/${cfg.configDir}/init.zsh
             '';
 
