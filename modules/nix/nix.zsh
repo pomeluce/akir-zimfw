@@ -19,6 +19,7 @@ fi
 alias nxupdate='nix flake update'
 alias nxshow='nix flake show'
 alias nxcheck='nix flake check'
+alias nxnew='nix flake new'
 alias nxdev='nix develop'
 
 # ── nxgc: Nix garbage collection ────────────────────────────────────────────
